@@ -1,0 +1,118 @@
+
+IaaC is a concept and approach to managing GCP resources using code. 
+The term infrastructure here means all GCP resources such as BigQuery datasets, 
+GCS buckets, IAM, Bigtable and all other resources.
+
+
+1. Downloading Terraform to Cloud Shell
+2. Configuring the Terraform backend to a GCS bucket
+3. Using variables in Terraform
+4. Running a Terraform script using Cloud Shell
+5. Configuring a BigQuery dataset using Terraform
+
+* Let's start by opening the Cloud Shell environment to download Terraform.
+
+step one : Downloading Terraform to Cloud Shell
+
+# wget https://releases.hashicorp.com/terraform/1.0.8/terraform_1.0.8_linux_amd64.zip
+
+* Unzip the file
+
+# unzip terraform_1.0.8_linux_amd64.zip
+
+* let's move the Terraform file to the /usr/local/bin/ path so that we can 
+ call the file an application, as follows:
+
+ # sudo mv terraform /usr/local/bin/
+
+ * check the terraform version 
+
+ # terraform --version
+Next step
+* Before this create a project and a bucket on your GCP.
+ * Open your Cloud Editor environment and create a new folder called terraform-primary
+
+ * create a file named backend.tf and write the following script on it and don't 
+ forget to change the bucket name to your own GCS bucket name:
+
+ terraform {
+     backend "gcs" {
+       bucket = "terraform-bigquery-project-kingsley-2023"
+       prefix = "terraform-backend-basic"
+     }
+}
+
+The prefix, in this case terraform-backend-basic, 
+specifies the folder where the configuration files will 
+be stored in the GCS bucket. This script will set up Terraform 
+to use that folder to store configuration files.
+
+* Using variables in Terraform
+
+# Next, we need to create a file called main.tf. In the file, add this script:
+   provider "google" {
+     project = var.project_id
+}
+
+
+* Terraform is instructed to load all Google (GCP) libraries by the provider script.
+ Keep in mind that Terraform is open source software and can manage a variety of 
+ settings other than those found in GCP.
+
+ * To declare the variable, let's create another file named variables.tf. 
+   Use the following script inside the file:
+
+   variable "project_id" {
+     type = string
+}
+
+The variable script doesn't set the project_id value yet—it just says that a 
+variable named project_id exists. There are some options to set the variable; 
+in this exercise, we will use a file to set the variable. To do that, create a file
+ named terraform.tfvars.
+
+ In the file, set the project_id variable, like this. Don't forget to change the
+  project ID from my project name to your project ID:
+
+
+ project_id  = "kingsley-gcp-data-eng"
+
+ * we will run the following accordingly
+
+ 1. terraform init 
+ 2. terraform plan 
+ 3. terraform apply
+
+
+ That's an important order for running Terraform properly.
+  First, let's run the terraform init command, inside the terraform-primary folder. 
+  Make sure you are inside the folder, not outside. Run this command:
+
+* Configuring a BigQuery dataset using Terraform
+
+* Back in Cloud Editor, go to the main.tf file. Under the provider section, add the following google_bigquery_dataset resource script:
+        provider "google" {
+     project = var.project_id
+   }
+   resource "google_bigquery_dataset" "new_dataset" {
+     project    = var.project_id
+     dataset_id = "dataset_with_terraform"
+   }
+
+   This configuration will tell Terraform to create a BigQuery dataset 
+   called dataset_with_terraform.
+
+* To run it, go back to Cloud Editor and run the terraform plan command, as follows:
+
+# terraform plan
+
+Since the output is as expected, let's continue by running the terraform ap-
+ply command, as follows:
+   # terraform apply
+
+The command will ask you to type yes—do that and click Enter. 
+Once done, you can check your BigQuery console, and you will find the dataset 
+is already created for you.
+
+
+

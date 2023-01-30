@@ -114,5 +114,10 @@ The command will ask you to type yes—do that and click Enter.
 Once done, you can check your BigQuery console, and you will find the dataset 
 is already created for you.
 
+I will be making videos on the basic of Snowflake and after that I will build a 
+complete Data pipeline using AWS data stacks and snowflake.
+
+Thank you for watching and please subscribe and like the video.
+
 
 
